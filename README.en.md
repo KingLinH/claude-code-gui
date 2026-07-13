@@ -33,6 +33,30 @@ as-is — only the chrome is translated.
 
 ## Run
 
+### One-click Windows service (recommended)
+
+Make sure Node.js 18 or newer is installed, then double-click this file in the project directory:
+
+```text
+start-service.bat
+```
+
+When needed, the script installs dependencies, builds the application, starts it in the background, and opens:
+
+```text
+http://127.0.0.1:4317
+```
+
+To stop the service, double-click:
+
+```text
+stop-service.bat
+```
+
+Runtime logs are saved as `claude-code-gui.log` and `claude-code-gui.log.err` in the project directory.
+
+### Development mode
+
 ```bash
 npm install
 npm run dev      # → http://127.0.0.1:5173

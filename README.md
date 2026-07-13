@@ -22,6 +22,30 @@ Node 桥接用 **Express 作为 Vite 中间件** → 单进程、单端口(5173)
 
 ## 运行
 
+### Windows 一键启动（推荐）
+
+首次使用请确保已安装 Node.js 18 或更高版本，然后在项目目录中双击：
+
+```text
+start-service.bat
+```
+
+脚本会在需要时自动安装依赖、构建应用、后台启动服务，并打开：
+
+```text
+http://127.0.0.1:4317
+```
+
+关闭服务时双击：
+
+```text
+stop-service.bat
+```
+
+运行日志保存在项目目录的 `claude-code-gui.log` 和 `claude-code-gui.log.err`。
+
+### 开发模式
+
 ```bash
 npm install
 npm run dev      # → http://127.0.0.1:5173

@@ -9,9 +9,11 @@ dist/
 
 # backups / local artifacts
 *.bak
+.claude-code-gui.pid
 
 # logs
 *.log
+*.log.err
 npm-debug.log*
 
 # env / local config
