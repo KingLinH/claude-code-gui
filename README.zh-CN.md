@@ -83,4 +83,4 @@ npm start           # 独立桥接(端口 4317),托管 dist/ + /api
 
 ## 协议
 
-[MIT](./LICENSE) © <your-name>
+[MIT](./LICENSE) © KingLinH

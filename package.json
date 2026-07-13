@@ -5,14 +5,14 @@
   "type": "module",
   "description": "A browser GUI to visualize & manage Claude Code's local data (~/.claude) — sessions, transcripts, MCP, skills, memory, settings, plans, with cross-data search and one-click resume.",
   "license": "MIT",
-  "author": "<your-name>",
-  "homepage": "https://github.com/<your-github-username>/claude-code-gui",
+  "author": "KingLinH",
+  "homepage": "https://github.com/KingLinH/claude-code-gui",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<your-github-username>/claude-code-gui.git"
+    "url": "git+https://github.com/KingLinH/claude-code-gui.git"
   },
   "bugs": {
-    "url": "https://github.com/<your-github-username>/claude-code-gui/issues"
+    "url": "https://github.com/KingLinH/claude-code-gui/issues"
   },
   "keywords": [
     "claude",

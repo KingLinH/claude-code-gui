@@ -120,5 +120,5 @@ npm start           # standalone bridge (port 4317) serving dist/ + /api
 
 ## License
 
-[MIT](./LICENSE) © <your-name>
+[MIT](./LICENSE) © KingLinH
 
