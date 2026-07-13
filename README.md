@@ -1,5 +1,7 @@
 # Claude Code GUI
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 A browser-based visualization & management interface for Claude Code's local data
 (`~/.claude`), styled after the OpenAI Codex client (dark, Linear-like developer
 tool aesthetic). Browse sessions/transcripts with tool calls & diffs, manage
