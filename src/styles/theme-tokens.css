@@ -1,0 +1,36 @@
+/* Single source of truth for the Codex/Linear dark palette.
+   Naive UI themeOverrides in src/theme.ts mirror these hex values. */
+:root,
+:root[data-theme='dark'] {
+  --bg: #0d0d0f;
+  --surface: #161618;
+  --surface-2: #1d1d20;
+  --border: #26262b;
+  --text: #e6e6e8;
+  --text-dim: #9a9aa2;
+  --text-faint: #6b6b73;
+  --accent: #7c9eff;
+  --accent-press: #6a8ae6;
+  --success: #3dd6a0;
+  --warning: #e0a84a;
+  --danger: #ef6b6b;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root[data-theme='light'] {
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f1f1f3;
+  --border: #e4e4e7;
+  --text: #1a1a1c;
+  --text-dim: #5a5a62;
+  --text-faint: #8a8a92;
+  --accent: #5a7ce0;
+  --accent-press: #4a6cd0;
+  --success: #1ea97a;
+  --warning: #c98a30;
+  --danger: #d05050;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

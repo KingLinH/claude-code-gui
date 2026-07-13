@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# vite cache
+.vite/
+
+# backups / local artifacts
+*.bak
+
+# logs
+*.log
+npm-debug.log*
+
+# env / local config
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
