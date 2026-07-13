@@ -1,5 +1,7 @@
 # Claude Code GUI
 
+[![CI](https://github.com/KingLinH/claude-code-gui/actions/workflows/ci.yml/badge.svg)](https://github.com/KingLinH/claude-code-gui/actions/workflows/ci.yml)
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 A browser-based visualization & management interface for Claude Code's local data

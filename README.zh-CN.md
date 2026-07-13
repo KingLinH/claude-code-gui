@@ -1,5 +1,7 @@
 # Claude Code GUI
 
+[![CI](https://github.com/KingLinH/claude-code-gui/actions/workflows/ci.yml/badge.svg)](https://github.com/KingLinH/claude-code-gui/actions/workflows/ci.yml)
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 一个**浏览器端**的 Claude Code 本地数据(`~/.claude`)可视化与管理界面,参考 OpenAI Codex 客户端的深色开发者工具风格(Codex/Linear 气质)。可浏览会话/转写(含工具调用与 diff)、管理 MCP / Skills / Memory / Settings / Plans、跨数据源全局搜索,以及一键 `claude --resume` 接回某个项目。
