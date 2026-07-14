@@ -5,10 +5,11 @@
 [English](README.en.md) | [简体中文](README.md)
 
 A browser-based visualization & management interface for Claude Code's local data
-(`~/.claude`), styled after the OpenAI Codex client (dark, Linear-like developer
-tool aesthetic). Browse sessions/transcripts with tool calls & diffs, manage
-MCP / Skills / Memory / Settings / Plans, run a cross-data global search, and
-one-click `claude --resume` back into a project.
+(`~/.claude`), styled after the OpenAI Codex client (Linear-like developer tool
+aesthetic, with a light/dark toggle). Browse sessions/transcripts with tool calls &
+diffs, manage MCP / Skills / Memory / Settings / Plans (incl. project-level
+permissions/hooks), run a cross-data global search, open a `Ctrl/Cmd+K` command
+palette, and one-click `claude --resume` back into a project.
 
 ## Stack
 
@@ -24,6 +25,14 @@ toggle in the sidebar switches all UI chrome instantly and persists the choice t
 using it re-renders on switch. Add a locale by dropping in another dict file and
 registering it in `index.ts`. Data content (session titles, memories, plans) is shown
 as-is — only the chrome is translated.
+
+## Keyboard shortcuts
+
+- `Ctrl/Cmd+K` — command palette (navigate the 9 pages, toggle theme/language, jump to search)
+- `Ctrl/Cmd+J` — toggle light/dark theme
+- `Ctrl/Cmd+Shift+L` — toggle 中文 / English
+- `/` — jump to global search
+- Single-key shortcuts are disabled while typing in a field
 
 ## Prerequisites
 
@@ -92,7 +101,9 @@ npm start           # standalone bridge (port 4317) serving dist/ + /api
 - **Path safety** (`server/paths.ts`): root confinement + traversal rejection +
   filename allowlists. `:encoded`/`:id`/`:agentId` are validated.
 - **Theming**: CSS custom-property tokens (`src/styles/theme-tokens.css`) consumed by
-  both Tailwind and Naive UI `themeOverrides` (`src/theme.ts`).
+  both Tailwind and Naive UI `themeOverrides` (`src/theme.ts`); `<html data-theme>`
+  switches light/dark, driven by `useTheme` (`src/composables/useTheme.ts`)
+  (localStorage + `prefers-color-scheme`).
 
 ## Status
 
@@ -108,6 +119,15 @@ npm start           # standalone bridge (port 4317) serving dist/ + /api
 - **v1.3 (done)**: Settings editor (`settings.json` model + `includeCoAuthoredBy` +
   env key-value editor + read-only raw mirror; `config.json` API key masked); Plans
   reader/editor (first-H1 titles, rendered markdown + raw edit).
+- **v1.4 (done)**: ① performance — `highlight.js` loaded on demand (common-language
+  subset; `MarkdownBlock` chunk ~1 MB → ~206 KB) + an mtime-invalidated cache on
+  `summarize()`; ② cross-platform resume — macOS (osascript) / Linux (terminal
+  auto-detect) open a terminal running `claude --resume`; ③ light/dark theme toggle
+  (light tokens already existed; added a `useTheme` composable + Naive light overrides
+  + sidebar switch + a shared `--code-bg`); ④ `Ctrl/Cmd+K` command palette + global
+  shortcuts; ⑤ project-level `.claude/settings.json` editor (permissions
+  allow/deny/ask + defaultMode + hooks + env + model). Also fixes `encodeCwd` missing
+  `/` (forward-slash project paths now encode correctly).
 - **Editing (done)**: session **rename** (append-only `ai-title` line) + **delete**
   (transcript + subagents + `file-history/` + `session-env/`, backup first); Skills
   full **CRUD** (create → user `~/.claude/skills/`, edit any `SKILL.md`, delete). All
@@ -116,26 +136,26 @@ npm start           # standalone bridge (port 4317) serving dist/ + /api
   overview (recent sessions, last usage, project skills/MCP/memory counts) deep-linking
   into each module.
 - **Reconnect to Claude (done)**: one-click **resume** — opens a terminal in the project
-  cwd running `claude --resume <id>`. **Windows-only** for now (see Platform notes).
+  cwd running `claude --resume <id>`. **Cross-platform**: Windows / macOS (Terminal) /
+  Linux (terminal auto-detect).
 - **Global search (done)**: `/search` across sessions + memory + skills + plans, with
   highlighted snippets and click-to-navigate.
 - **i18n (done)**: built-in 中文 / English toggle.
 - Production build verified (`npm run build` → `dist/`, served by `npm start`).
 
 ### Possible follow-ups
-- Code-split `highlight.js` (the `MarkdownBlock` chunk is ~1 MB because all languages
-  register; import only the languages you use).
 - Virtualize the transcript list for very long sessions (currently paginated
-  load-more).
-- Parse-index cache for huge transcripts (seek by uuid instead of re-streaming).
-- Project-level `.claude/settings.json` (permissions/hooks) editor.
-- macOS/Linux launch for the resume feature (currently Windows-only).
+  load-more; transcript blocks have variable height, so this needs dynamic measuring).
+
+> v1.4 shipped: on-demand `highlight.js`, `summarize()` cache, project-level settings
+> editor, cross-platform resume, light/dark theme, command palette.
 
 ## Platform notes
 
 - The **resume** feature ("继续会话" / open a terminal running `claude --resume`) is
-  **Windows-only**. On macOS/Linux the endpoint returns HTTP 501 — the rest of the app
-  works everywhere. Cross-platform launch is a welcome contribution.
+  **cross-platform**: Windows / macOS (Terminal, via osascript) / Linux (prefers
+  `$TERMINAL`, then probes gnome-terminal / konsole / xfce4-terminal / lxterminal /
+  alacritty / kitty; returns HTTP 501 if none are installed).
 - All file paths use `path.join`/`path.resolve`; cwd comparisons normalize separators.
   Tested on Windows; should work on macOS/Linux apart from resume.
 
