@@ -28,13 +28,27 @@ if exist "%PID_FILE%" (
   set /p SERVICE_PID=<"%PID_FILE%"
   call :is_running
   if not errorlevel 1 (
-    echo [INFO] Service is already running ^(PID !SERVICE_PID!^).
-    echo [INFO] Opening %APP_URL%
-    start "" "%APP_URL%"
-    exit /b 0
+    call :recover_from_health
+    if not errorlevel 1 (
+      set /p SERVICE_PID=<"%PID_FILE%"
+      echo [INFO] Service is already running ^(PID !SERVICE_PID!^).
+      echo [INFO] Opening %APP_URL%
+      start "" "%APP_URL%"
+      exit /b 0
+    )
+    echo [INFO] PID file process is running, but health check did not confirm this service.
   )
   echo [INFO] Removing stale PID file.
   del /q "%PID_FILE%" >nul 2>&1
+)
+
+call :recover_from_health
+if not errorlevel 1 (
+  set /p SERVICE_PID=<"%PID_FILE%"
+  echo [INFO] Service is already running ^(PID !SERVICE_PID!^).
+  echo [INFO] Opening %APP_URL%
+  start "" "%APP_URL%"
+  exit /b 0
 )
 
 if not exist "node_modules\" (
@@ -75,7 +89,7 @@ if not defined SERVICE_PID (
 )
 
 >"%PID_FILE%" echo %SERVICE_PID%
-echo [INFO] Service process started ^(PID %SERVICE_PID%^).
+echo [INFO] Service process started ^(temporary PID %SERVICE_PID%^).
 echo [INFO] Waiting for %APP_URL% ...
 
 powershell -NoProfile -Command "$url = '%APP_URL%/api/health'; for ($i = 0; $i -lt 30; $i++) { try { $r = Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 1; if ($r.StatusCode -eq 200) { exit 0 } } catch {}; Start-Sleep -Milliseconds 500 }; exit 1"
@@ -87,10 +101,22 @@ if errorlevel 1 (
   exit /b 1
 )
 
+call :recover_from_health
+if errorlevel 1 (
+  echo [WARN] Service is ready, but could not read its health PID. Keeping temporary PID %SERVICE_PID%.
+) else (
+  set /p SERVICE_PID=<"%PID_FILE%"
+  echo [INFO] Service ready ^(PID !SERVICE_PID!^).
+)
+
 echo [OK] Claude Code GUI is running at %APP_URL%
 start "" "%APP_URL%"
 exit /b 0
 
 :is_running
 tasklist /fi "PID eq %SERVICE_PID%" /fo csv /nh 2>nul | findstr /c:",\"%SERVICE_PID%\"," >nul
+exit /b %errorlevel%
+
+:recover_from_health
+powershell -NoProfile -Command "$url = '%APP_URL%/api/health'; $pidFile = '%PID_FILE%'; try { $h = Invoke-RestMethod -UseBasicParsing -Uri $url -TimeoutSec 1; $serverPid = 0; if ($h.ok -and $null -ne $h.pid -and [int]::TryParse([string]$h.pid, [ref]$serverPid) -and $serverPid -gt 0) { Set-Content -LiteralPath $pidFile -Value $serverPid; exit 0 } } catch {}; exit 1"
 exit /b %errorlevel%

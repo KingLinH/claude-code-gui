@@ -27,6 +27,7 @@ export function createApp() {
   api.get('/health', (_req, res) => {
     res.json({
       ok: true,
+      pid: process.pid,
       claudeDir: CLAUDE_DIR,
       dotClaudeJson: DOT_CLAUDE_JSON,
       platform: process.platform,
