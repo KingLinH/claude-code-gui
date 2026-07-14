@@ -24,7 +24,7 @@ const parts = computed<Part[]>(() => {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-lg border border-border bg-[#0a0a0c] font-mono text-[12.5px]">
+  <div class="overflow-hidden rounded-lg border border-border bg-[var(--code-bg)] font-mono text-[12.5px]">
     <div
       v-if="title"
       class="truncate border-b border-border bg-surface px-3 py-1 text-[11px] text-text-dim"

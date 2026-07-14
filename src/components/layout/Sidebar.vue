@@ -9,12 +9,15 @@ import {
   ExtensionPuzzleOutline,
   FolderOpenOutline,
   GridOutline,
+  MoonOutline,
   SearchOutline,
   SettingsOutline,
+  SunnyOutline,
   TerminalOutline,
 } from '@vicons/ionicons5'
 import { NIcon } from 'naive-ui'
 import { availableLocales, locale, setLocale, t } from '@/i18n'
+import { theme, toggleTheme } from '@/composables/useTheme'
 
 interface NavItem {
   to: string
@@ -66,6 +69,15 @@ const nav: NavItem[] = [
     </nav>
 
     <div class="mt-auto space-y-2 px-3 py-3">
+      <!-- theme toggle -->
+      <button
+        class="flex w-full items-center justify-center gap-1.5 rounded-md bg-surface-2 px-2 py-1.5 text-[11px] text-text-dim transition-colors hover:text-text"
+        :title="theme === 'dark' ? t('theme.switchToLight') : t('theme.switchToDark')"
+        @click="toggleTheme"
+      >
+        <NIcon :component="theme === 'dark' ? SunnyOutline : MoonOutline" :size="14" />
+        <span>{{ theme === 'dark' ? t('theme.switchToLight') : t('theme.switchToDark') }}</span>
+      </button>
       <!-- language toggle -->
       <div class="flex items-center gap-1 rounded-md bg-surface-2 p-0.5">
         <button

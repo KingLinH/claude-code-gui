@@ -25,7 +25,7 @@ const truncated = computed(() => /\[truncated /.test(props.result.content))
     </button>
     <pre
       v-if="open"
-      class="max-h-96 overflow-auto whitespace-pre-wrap break-words border-t border-border bg-[#0a0a0c] p-3 font-mono text-[12px] leading-relaxed text-text-dim"
+      class="max-h-96 overflow-auto whitespace-pre-wrap break-words border-t border-border bg-[var(--code-bg)] p-3 font-mono text-[12px] leading-relaxed text-text-dim"
     >{{ result.content }}</pre>
   </div>
 </template>

@@ -8,6 +8,7 @@ import type {
   MessagesResponse,
   ProjectInfo,
   ProjectOverview,
+  ProjectSettingsResponse,
   SearchHit,
   SessionSummary,
   SkillDetail,
@@ -168,6 +169,13 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify({ settings }),
     }),
+  projectSettings: (encoded: string) =>
+    request<ProjectSettingsResponse>(`/projects/${encodeURIComponent(encoded)}/settings`),
+  saveProjectSettings: (encoded: string, settings: Record<string, unknown>) =>
+    request<{ ok: boolean; backup: string | null; mtimeMs: number }>(
+      `/projects/${encodeURIComponent(encoded)}/settings`,
+      { method: 'PUT', body: JSON.stringify({ settings }) },
+    ),
   plans: () =>
     request<Array<{ file: string; title: string; sizeBytes: number; mtimeMs: number }>>('/plans'),
   planDetail: (file: string) =>

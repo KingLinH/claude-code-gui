@@ -66,24 +66,36 @@ function hasSubagents(sessionDir: string): boolean {
   }
 }
 
-/** Lightweight single pass → summary only (for the session LIST). No turn construction. */
-export async function summarize(
-  file: string,
-  opts: { hasSubagents?: boolean } = {},
-): Promise<SessionSummary & { malformedCount: number }> {
-  const stat = fs.statSync(file)
-  const acc = {
-    aiTitle: undefined as string | undefined,
-    lastPrompt: undefined as string | undefined,
-    agentName: undefined as string | undefined,
-    mode: undefined as string | undefined,
-    permissionMode: undefined as string | undefined,
-    firstTs: undefined as string | undefined,
-    lastTs: undefined as string | undefined,
-    messageCount: 0,
-    durationMs: undefined as number | undefined,
-  }
+/** The expensive single-pass parse result (everything derived from reading the file). */
+interface SummaryParse {
+  aiTitle?: string
+  lastPrompt?: string
+  agentName?: string
+  mode?: string
+  permissionMode?: string
+  firstTs?: string
+  lastTs?: string
+  messageCount: number
+  durationMs?: number
+  malformed: number
+}
 
+/**
+ * mtimeMs-keyed cache for the summary single-pass parse. The session LIST calls
+ * summarize() for every transcript on every load; the parse is the costly part
+ * (stream the whole file). Claude Code appends lines → mtimeMs changes → entry
+ * auto-invalidates. Stat size + hasSubagents are recomputed each call (cheap, and
+ * can change independently of the transcript's own mtime).
+ */
+const summaryCache = new Map<string, { mtimeMs: number; parsed: SummaryParse }>()
+
+async function parseSummary(file: string, mtimeMs: number): Promise<SummaryParse> {
+  const cached = summaryCache.get(file)
+  if (cached && cached.mtimeMs === mtimeMs) return cached.parsed
+  const acc: SummaryParse = {
+    messageCount: 0,
+    malformed: 0,
+  }
   const { malformed } = await streamLines(file, (l) => {
     if (l.timestamp) {
       if (!acc.firstTs) acc.firstTs = l.timestamp
@@ -99,23 +111,39 @@ export async function summarize(
     }
     if (l.type === 'user' || l.type === 'assistant') acc.messageCount++
   })
+  acc.malformed = malformed
+  summaryCache.set(file, { mtimeMs, parsed: acc })
+  return acc
+}
 
+/** Drop a cached summary entry (e.g. after the file is deleted). */
+export function invalidateSummaryCache(file: string): void {
+  summaryCache.delete(file)
+}
+
+/** Lightweight single pass → summary only (for the session LIST). No turn construction. */
+export async function summarize(
+  file: string,
+  opts: { hasSubagents?: boolean } = {},
+): Promise<SessionSummary & { malformedCount: number }> {
+  const stat = fs.statSync(file)
+  const parsed = await parseSummary(file, stat.mtimeMs)
   return {
     sessionId: path.basename(file, '.jsonl'),
     sizeBytes: stat.size,
     mtimeMs: stat.mtimeMs,
-    aiTitle: acc.aiTitle,
-    lastPrompt: acc.lastPrompt,
-    agentName: acc.agentName,
-    mode: acc.mode,
-    permissionMode: acc.permissionMode,
-    firstTs: acc.firstTs,
-    lastTs: acc.lastTs,
-    messageCount: acc.messageCount,
-    durationMs: acc.durationMs,
+    aiTitle: parsed.aiTitle,
+    lastPrompt: parsed.lastPrompt,
+    agentName: parsed.agentName,
+    mode: parsed.mode,
+    permissionMode: parsed.permissionMode,
+    firstTs: parsed.firstTs,
+    lastTs: parsed.lastTs,
+    messageCount: parsed.messageCount,
+    durationMs: parsed.durationMs,
     // subagents live at <projectDir>/<sessionId>/subagents (NOT <projectDir>/subagents)
     hasSubagents: opts.hasSubagents ?? hasSubagents(path.join(path.dirname(file), path.basename(file, '.jsonl'))),
-    malformedCount: malformed,
+    malformedCount: parsed.malformed,
   }
 }
 

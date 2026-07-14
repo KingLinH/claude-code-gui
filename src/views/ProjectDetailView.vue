@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { NButton, NIcon, NSpin, useMessage } from 'naive-ui'
 import { CopyOutline, PlayOutline } from '@vicons/ionicons5'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { api } from '@/api/client'
 import { fmtCost, fmtDuration, fmtTokens, relTime } from '@/utils/format'
 import { t } from '@/i18n'
@@ -10,6 +10,7 @@ import type { ProjectOverview } from '@shared/types'
 
 const props = defineProps<{ encoded: string }>()
 const message = useMessage()
+const router = useRouter()
 const overview = ref<ProjectOverview | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -65,6 +66,10 @@ function copyPrompt() {
 function titleOf(s: { aiTitle?: string; lastPrompt?: string; sessionId: string }) {
   return s.aiTitle || s.lastPrompt?.slice(0, 80) || s.sessionId.slice(0, 8)
 }
+
+function goSettings() {
+  router.push(`/projects/${props.encoded}/settings`)
+}
 </script>
 
 <template>
@@ -92,6 +97,9 @@ function titleOf(s: { aiTitle?: string; lastPrompt?: string; sessionId: string }
           <NButton size="small" :disabled="!last?.lastPrompt" @click="copyPrompt">
             <template #icon><NIcon :component="CopyOutline" /></template>
             {{ t('resume.copyPrompt') }}
+          </NButton>
+          <NButton size="small" tag="a" @click="goSettings">
+            {{ t('projectSettings.title') }}
           </NButton>
           <span v-if="!resumeSessionId" class="text-[11px] text-text-faint">{{ t('projects.noSessions') }}</span>
         </div>

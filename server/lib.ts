@@ -42,9 +42,12 @@ export function getKnownProjectCwds(): string[] {
   return Object.keys(projects).filter((p) => typeof p === 'string' && p.length > 0)
 }
 
-/** Forward encoding used by Claude for project folders: cwd → slug. */
+/** Forward encoding used by Claude for project folders: cwd → slug.
+ *  Replaces path separators and the drive colon. Note ~/.claude.json stores
+ *  project cwds with forward slashes while the OS cwd may use backslashes —
+ *  both encode to the same slug only if `/` is included here. */
 export function encodeCwd(cwd: string): string {
-  return cwd.replace(/[:\\]/g, '-')
+  return cwd.replace(/[:\\/]/g, '-')
 }
 
 /** Read every live-session JSON file (keyed by OS pid). */

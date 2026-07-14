@@ -303,3 +303,11 @@ export interface MemoryDetail {
   body: string
   mtimeMs: number
 }
+
+// Project settings (v1.3) ---------------------------------------------------
+export interface ProjectSettingsResponse {
+  cwd: string
+  settings: Record<string, unknown>
+  exists: boolean
+  mtimeMs: number
+}

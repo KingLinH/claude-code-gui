@@ -6,7 +6,8 @@ import { darkTheme, type GlobalThemeOverrides } from 'naive-ui'
  * "[seemly/rgba]: Invalid color value"). Hex values mirror theme-tokens.css.
  * Only fontFamily stays a var() (Naive uses it verbatim, no rgba derivation).
  */
-export const themeOverrides: GlobalThemeOverrides = {
+
+const darkOverrides: GlobalThemeOverrides = {
   common: {
     primaryColor: '#7c9eff',
     primaryColorHover: '#8badff',
@@ -31,6 +32,37 @@ export const themeOverrides: GlobalThemeOverrides = {
     borderRadiusSmall: '6px',
     fontWeightStrong: '600',
   },
+}
+
+const lightOverrides: GlobalThemeOverrides = {
+  common: {
+    primaryColor: '#5a7ce0',
+    primaryColorHover: '#6e8ee6',
+    primaryColorPressed: '#4a6cd0',
+    primaryColorSuppl: '#5a7ce0',
+    bodyColor: '#fbfbfc',
+    cardColor: '#ffffff',
+    modalColor: '#ffffff',
+    popoverColor: '#f1f1f3',
+    inputColor: '#f1f1f3',
+    tableColor: '#ffffff',
+    tableHeaderColor: '#f1f1f3',
+    borderColor: '#e4e4e7',
+    dividerColor: '#e4e4e7',
+    textColorBase: '#1a1a1c',
+    textColor1: '#1a1a1c',
+    textColor2: '#5a5a62',
+    textColor3: '#8a8a92',
+    fontFamily: 'var(--sans)',
+    fontFamilyMono: 'var(--mono)',
+    borderRadius: '8px',
+    borderRadiusSmall: '6px',
+    fontWeightStrong: '600',
+  },
+}
+
+export function getThemeOverrides(t: 'dark' | 'light'): GlobalThemeOverrides {
+  return t === 'dark' ? darkOverrides : lightOverrides
 }
 
 export { darkTheme }

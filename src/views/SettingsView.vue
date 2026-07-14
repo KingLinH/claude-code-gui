@@ -188,7 +188,7 @@ watch(() => store.data, (d) => {
           <div class="mb-1 text-[11px] uppercase tracking-wide text-text-faint">
             {{ t('settings.mirror') }}
           </div>
-          <pre class="overflow-auto rounded-lg border border-border bg-[#0a0a0c] p-3 font-mono text-[12px] leading-relaxed text-text-dim">{{ rawJson }}</pre>
+          <pre class="overflow-auto rounded-lg border border-border bg-[var(--code-bg)] p-3 font-mono text-[12px] leading-relaxed text-text-dim">{{ rawJson }}</pre>
         </div>
 
         <!-- config.json -->

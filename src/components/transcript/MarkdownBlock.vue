@@ -57,7 +57,7 @@ const html = computed(() => renderMarkdown(props.content))
   overflow: hidden;
 }
 .md :deep(.hljs) {
-  background: #0a0a0c !important;
+  background: var(--code-bg) !important;
   padding: 12px 14px;
   font-family: var(--mono);
   font-size: 12.5px;

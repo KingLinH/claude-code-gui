@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url'
 import express from 'express'
 import { CLAUDE_DIR, DOT_CLAUDE_JSON } from './paths.js'
 import { projectsRouter } from './routes/projects.js'
+import { projectSettingsRouter } from './routes/project-settings.js'
 import { projectSessionsRouter, sessionsRouter } from './routes/sessions.js'
 import { mcpRouter } from './routes/mcp.js'
 import { statsRouter } from './routes/stats.js'
@@ -34,6 +35,7 @@ export function createApp() {
   })
 
   api.use('/projects', projectsRouter)
+  api.use('/projects', projectSettingsRouter)
   api.use('/projects', projectSessionsRouter)
   api.use('/sessions', sessionsRouter)
   api.use('/mcp', mcpRouter)

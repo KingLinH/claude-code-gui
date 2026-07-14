@@ -9,6 +9,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/ProjectDetailView.vue'),
     props: true,
   },
+  {
+    path: '/projects/:encoded/settings',
+    name: 'project-settings',
+    component: () => import('@/views/ProjectSettingsView.vue'),
+    props: true,
+  },
   { path: '/projects', name: 'projects', component: () => import('@/views/ProjectsHubView.vue') },
   {
     path: '/sessions/:encoded/:id',

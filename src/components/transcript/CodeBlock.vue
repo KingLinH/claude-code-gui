@@ -18,7 +18,7 @@ async function copy() {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-lg border border-border bg-[#0a0a0c]">
+  <div class="overflow-hidden rounded-lg border border-border bg-[var(--code-bg)]">
     <div class="flex items-center justify-between border-b border-border bg-surface px-3 py-1">
       <span class="truncate text-[11px] uppercase tracking-wide text-text-faint">
         {{ lang || title || 'text' }}
