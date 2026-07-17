@@ -67,6 +67,11 @@ export const api = {
       `/projects/${encodeURIComponent(encoded)}/sessions/${id}/resume`,
       { method: 'POST', body: JSON.stringify({}) },
     ),
+  newSession: (encoded: string) =>
+    request<{ ok: boolean; cwd: string }>(
+      `/projects/${encodeURIComponent(encoded)}/new-session`,
+      { method: 'POST', body: JSON.stringify({}) },
+    ),
   messages: (
     encoded: string,
     id: string,

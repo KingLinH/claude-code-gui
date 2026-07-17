@@ -80,6 +80,8 @@ export const zh: Record<string, string> = {
   'projects.memory': '记忆',
   'projects.noMcp': '无项目级 MCP 服务器',
   'projects.resumeTitle': '接回 Claude',
+  'projects.newSession': '新开会话',
+  'projects.newSessionLaunched': '已在新终端运行 claude',
 
   'resume.copyResume': '复制 resume 命令',
   'resume.copyPrompt': '复制上次 prompt',

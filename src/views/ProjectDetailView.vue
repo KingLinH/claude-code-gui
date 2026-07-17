@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { NButton, NIcon, NSpin, useMessage } from 'naive-ui'
-import { CopyOutline, PlayOutline } from '@vicons/ionicons5'
+import { AddOutline, CopyOutline, PlayOutline } from '@vicons/ionicons5'
 import { RouterLink, useRouter } from 'vue-router'
 import { api } from '@/api/client'
 import { fmtCost, fmtDuration, fmtTokens, relTime } from '@/utils/format'
@@ -54,6 +54,15 @@ async function resume() {
     message.error((e as Error).message)
   }
 }
+
+async function newSession() {
+  try {
+    await api.newSession(props.encoded)
+    message.success(t('projects.newSessionLaunched'))
+  } catch (e) {
+    message.error((e as Error).message)
+  }
+}
 function copyPrompt() {
   const p = last.value?.lastPrompt
   if (!p) {
@@ -90,7 +99,11 @@ function goSettings() {
 
         <!-- reconnect -->
         <div class="mt-3 flex flex-wrap items-center gap-2">
-          <NButton size="small" type="primary" :disabled="!resumeSessionId" @click="resume">
+          <NButton size="small" type="primary" @click="newSession">
+            <template #icon><NIcon :component="AddOutline" /></template>
+            {{ t('projects.newSession') }}
+          </NButton>
+          <NButton size="small" :disabled="!resumeSessionId" @click="resume">
             <template #icon><NIcon :component="PlayOutline" /></template>
             {{ t('resume.run') }}
           </NButton>

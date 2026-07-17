@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import type { NextFunction, Request, Response } from 'express'
-import { DOT_CLAUDE_JSON, HttpError, SESSIONS_DIR } from './paths.js'
+import { DOT_CLAUDE_JSON, HttpError, RE_ENCODED, SESSIONS_DIR } from './paths.js'
 import { readJsonIfExists } from './safe-write.js'
 import type { LiveSession } from '../shared/types.js'
 
@@ -43,11 +43,22 @@ export function getKnownProjectCwds(): string[] {
 }
 
 /** Forward encoding used by Claude for project folders: cwd → slug.
- *  Replaces path separators and the drive colon. Note ~/.claude.json stores
- *  project cwds with forward slashes while the OS cwd may use backslashes —
- *  both encode to the same slug only if `/` is included here. */
+ *  Replaces path separators, the drive colon, and `.` (Claude Code also maps `.`
+ *  to `-`, e.g. `DF.JackYun.MRP` → `DF-JackYun-MRP`). Note ~/.claude.json stores
+ *  project cwds with forward slashes while the OS cwd may use backslashes — all
+ *  three separators must be included here so both forms encode to the same slug. */
 export function encodeCwd(cwd: string): string {
-  return cwd.replace(/[:\\/]/g, '-')
+  return cwd.replace(/[:\\/.]/g, '-')
+}
+
+/** Resolve the real on-disk project cwd for an encoded slug, from the known-projects
+ *  allowlist (keys of ~/.claude.json `projects`). Used where there is no transcript to
+ *  read a cwd from (e.g. starting a brand-new session, editing project settings). */
+export function resolveProjectCwd(encoded: string): string {
+  if (!RE_ENCODED.test(encoded)) throw new HttpError(400, 'Invalid project id')
+  const match = getKnownProjectCwds().find((c) => encodeCwd(c) === encoded)
+  if (!match) throw new HttpError(404, 'Project cwd not found')
+  return match
 }
 
 /** Read every live-session JSON file (keyed by OS pid). */

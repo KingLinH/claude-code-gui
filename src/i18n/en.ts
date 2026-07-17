@@ -80,6 +80,8 @@ export const en: Record<string, string> = {
   'projects.memory': 'Memory',
   'projects.noMcp': 'No project-scoped MCP servers',
   'projects.resumeTitle': 'Reconnect to Claude',
+  'projects.newSession': 'New session',
+  'projects.newSessionLaunched': 'Opened a new terminal running claude',
 
   'resume.copyResume': 'Copy resume command',
   'resume.copyPrompt': 'Copy last prompt',

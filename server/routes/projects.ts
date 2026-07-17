@@ -2,9 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { Router } from 'express'
 import { DOT_CLAUDE_JSON, HttpError, PROJECTS_DIR, projectDir } from '../paths.js'
-import { asyncHandler, listLiveSessions } from '../lib.js'
+import { asyncHandler, listLiveSessions, resolveProjectCwd } from '../lib.js'
 import { readJsonIfExists } from '../safe-write.js'
 import { summarize, readFirstCwd } from '../jsonl.js'
+import { launchClaude } from '../launch.js'
 import type { ProjectInfo, ProjectOverview } from '../../shared/types.js'
 
 export const projectsRouter = Router()
@@ -147,5 +148,17 @@ projectsRouter.get(
       live: liveS ? { pid: liveS.pid, status: liveS.status } : null,
     }
     res.json(body)
+  }),
+)
+
+/** POST /:encoded/new-session — open a terminal running a fresh `claude` in the project cwd.
+ *  Unlike resume, needs no existing session; works for projects with zero sessions. */
+projectsRouter.post(
+  '/:encoded/new-session',
+  asyncHandler(async (req, res) => {
+    const cwd = resolveProjectCwd(req.params.encoded) // allowlist-validated (known project)
+    if (!fs.existsSync(cwd)) throw new HttpError(400, 'Project directory does not exist')
+    launchClaude(cwd, '')
+    res.json({ ok: true, cwd })
   }),
 )
